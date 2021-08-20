@@ -6,3 +6,6 @@ Projet annuel accord de prêt bancaire
 
   3.on devra cree un tableau d'amortissement à taux fixe et à taux variable 
   
+  4.le gars rentre ses donnes et si ca ne respecte pas il faudra les rediriges vers la page d'acceuil ou il y aura les regles 
+ 
+  
