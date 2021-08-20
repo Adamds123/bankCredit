@@ -1,0 +1,64 @@
+{% extends 'layout.twig' %}
+{% block body %}
+    {% if flash('success') %}
+        <div class="alert alert-success">
+            {{ flash('success') }}
+        </div>
+    {% endif %}
+    {% if flash('error') %}
+        <div class="alert alert-danger">
+            {{ flash('error') }}
+        </div>
+    {% endif %}
+<div class="row">
+    <div class="col-md-9">
+        <div class="row">
+            {% for row in rooms | batch(4) %}
+                <div class="card-deck mb-4">
+                    {% for r in row %}
+                        <div class="card">
+                            {% if r.categoryName %}
+                                <div class="card-header">{{ r.categoryName }}</div>
+                            {% endif %}
+                            {% if r.image %}
+                                <img src="{{ r.thumb }}" alt="" style="width:100%;">
+                            {% endif %}
+                            <div class="card-body">
+                                <h4 class="card-title">
+                                    <a href="{{ path('rooms.view', {slug: r.name, id: r.id}) }}">
+                                        {{ r.name }} {{ r.id }}, {{ r.price }}$
+                                    </a>
+                                </h4>
+                                <p class="card-text">
+                                    {{ r.description | nl2br }}
+                                </p>
+                                <p class="text-muted">Libre {{ r.releasedOn | ago }}</p>
+                            </div>
+                            <div class="card-footer">
+                                <a href="{{ path('rooms.view', {slug: r.name, id: r.id}) }}" class="btn btn-primary">
+                                    Voir la chambre
+                                </a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+
+        {% if category %}
+            {{ paginate(rooms, 'rooms.category', {slug: category.slug}) }}
+        {% else %}
+            {{ paginate(rooms, 'rooms.index') }}
+        {% endif %}
+    </div>
+    <div class="col-md-3">
+        <ul class="list-group">
+            {% for c in categories %}
+                <li class="list-group-item {% if c.id == category.id %}active{% endif %}">
+                    <a style="color:inherit;" href="{{ path('rooms.category', {slug: c.slug}) }}">{{ c.name }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}

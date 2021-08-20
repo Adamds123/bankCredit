@@ -1,0 +1,59 @@
+{% extends 'layout.twig' %}
+{% block body %}
+    <div class="row">
+    <div class="col-md-12" style="padding-left: 10rem; padding-right: 15rem">
+        {% if flash('success') %}
+            <div class="alert alert-success">
+                {{ flash('success') }}
+            </div>
+        {% endif %}
+        {% if flash('error') %}
+            <div class="alert alert-danger">
+                {{ flash('error') }}
+            </div>
+        {% endif %}
+        <div class="row">
+            {% for row in plats | batch(4) %}
+                <div class="card-deck mb-4">
+                    {% for p in row %}
+                        <div class="card">
+                            {% if p.nom %}
+                                <div class="card-header">
+                                    {{ p.nom }}
+                                </div>
+                            {% endif %}
+                            {% if p.image %}
+                                <img src="{{ p.thumb }}" alt="" style="width: 100%">
+                            {% endif %}
+
+                            <div class="card-body">
+                                <p class="card-text">
+                                    {{ p.description }}
+                                </p>
+                                <p class="text-muted">
+                                    ${{ p.price }}
+                                </p>
+                            </div>
+                            <div class="card-footer">
+                                {% if current_user() %}
+                                    <form action="{{ path('panier.table', {id: p.id}) }}" method="post">
+                                        {% set token = csrf_input() %}
+                                        {{ field('occupied_on', now,'Date d\'occupation', {class: 'datepicker'}) }}
+                                        <button class="btn btn-primary" type="submit">Ajouter au
+                                            panier
+                                        </button>
+                                        {{ token | raw }}
+                                    </form>
+                                {% else %}
+                                    <a class="btn btn-primary" href="{{ path('auth.login') }}">
+                                        Se connecter
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

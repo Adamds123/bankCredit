@@ -1,0 +1,54 @@
+{% extends 'layout.twig' %}
+
+{% block body %}
+
+    <div style="padding-left: 10rem; padding-right: 10rem">
+
+    <div class="card">
+        <div class="row">
+            {% if room.image %}
+                <div class="col-sm-4">
+                    <img src="{{ room.imageUrl }}" alt="{{ room.name }}" style="width:100%; height: 100%">
+                </div>
+            {% endif %}
+            <div class="col-sm-8">
+                <div class="card-body">
+                    <div class="card-title">
+                        La chambre {{ room.name }} était occupée {{ room.occupiedOn | ago }}
+                    </div>
+                    {% if room.categoryId %}
+                        <a href="{{ path('rooms.category', {slug: room.categorySlug}) }}"
+                           title="{{ room.categoryName }}">{{ room.categoryName }}</a>
+                    {% endif %}
+                    <div class="card-text" style="padding-top: 1rem">
+                        {% if current_user() %}
+                            <form action="{{ path('panier.chambres', {id: room.id}) }}" method="post">
+                                {% set token = csrf_input() %}
+                                <div class="mt-4">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            {{ field('occupied_on', now ,'Date d\'occuption', {class: 'datepicker'}) }}
+                                        </div>
+                                        <div class="col-md-6">
+                                            {{ field('released_on', now ,'Date de libération', {class: 'datepicker'}) }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="btn btn-primary" type="submit">Ajouter au
+                                    panier</button>
+                                {{ token | raw }}
+                            </form>
+                        {% else %}
+                            <a class="btn btn-primary" href="{{ path('auth.login') }}">
+                                Se connecter
+                            </a>
+                        {% endif %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

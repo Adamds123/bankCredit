@@ -1,0 +1,48 @@
+{% extends 'layout.twig' %}
+{% block body %}
+    <div class="row">
+    <div class="col-md-12" style="padding-left: 7rem; padding-right: 10rem">
+        {% if flash('success') %}
+            <div class="alert alert-success">
+                {{ flash('success') }}
+            </div>
+        {% endif %}
+        {% if flash('error') %}
+            <div class="alert alert-danger">
+                {{ flash('error') }}
+            </div>
+        {% endif %}
+        <div class="row">
+            {% for row in salles | batch(3) %}
+                <div class="card-deck mb-4" >
+                    {% for s in row %}
+                        <div class="card">
+                            <div class="card-header">
+                                {{ s.description }}
+                            </div>
+                            {% if s.image %}
+                                <img src="{{ s.thumb }}" alt="" style="width:100%;">
+                            {% endif %}
+                            <div class="card-footer">
+                                {% if current_user() %}
+                                    <form action="{{ path('panier.salles', {id: s.id}) }}" method="post">
+                                        {% set token = csrf_input() %}
+                                        {{ field('occupied_on', now,'Date d\'occupation', {class: 'datepicker'}) }}
+                                        <button class="btn btn-primary" type="submit">Ajouter au
+                                            panier
+                                        </button>
+                                        {{ token | raw }}
+                                    </form>
+                                {% else %}
+                                    <a class="btn btn-primary" href="{{ path('auth.login') }}">
+                                        Se connecter
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
